@@ -1,0 +1,169 @@
+html,
+body {
+    /* 防止觸控螢幕連點放大 */
+    touch-action: manipulation;
+
+    height: 100%;
+    overflow: scroll;
+    overflow-X: hidden;
+    overflow-Y: hidden;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.myBtn {
+    border-radius: 10px;
+    height: 50px;
+    width: 200px;
+    color: #fff;
+    background-color: #698ade;
+    border-color: #698ade;
+}
+
+.myAddRandomBtn {
+    border-radius: 10px;
+    height: 50px;
+    width: 200px;
+    color: #fff;
+    background-color: #698ade;
+    border-color: #698ade;
+}
+
+.myBtn:hover {
+    color: #fff;
+    background-color: #4668bf;
+    border-color: #4668bf;
+}
+
+.myTextBlock {
+    font-weight: bolder;
+    border-radius: 10px;
+    color: #fff;
+    background-color: #698ade;
+    border-color: #698ade;
+    justify-content: space-between;
+    display: flex
+}
+
+.mySwitchText {
+    color:#698ade;
+    font-size: 25px;
+    margin: 0px 10px;
+    width: 25%;
+    /* color: #698ade; */
+    font-weight: bold;
+    justify-content: center;
+}
+
+.form-check-input:checked{
+    background-color: #698ade;
+    border-color: #698ade;
+}
+
+#canvas {
+    margin: 20px;
+    box-shadow: 0px 0px 20px 2px #bcbcbc;
+    border-radius: 50px;
+    background-color: #e7ebf5;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.itemTextBar {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.itemText {
+    width: 400px;
+    color: #698ade;
+    font-weight: bold;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.itemLoadingBar {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.loadingBar {
+    margin: 10px 0px 20px 0px;
+    border-radius: 30px;
+    width: 400px;
+    height: 20px;
+    position: relative;
+    box-shadow: 0px 0px 15px 2px #bcbcbc;
+    background-color: #d9d9d9;
+}
+
+
+#loadingLine {
+    border-radius: 30px;
+    height: 100%;
+    width: 0%;
+    background-color: #698ade;
+    position: absolute;
+}
+
+.loadingPercentBar {
+    z-index: 10;
+    position: absolute;
+    top: -5px;
+    color: white;
+    font-weight: 900;
+    font-size: 20px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
+.buttonBar,
+.inputBar {
+    display: flex;
+    width: 50%;
+    margin: 10px;
+}
+
+@media screen and (max-width:900px) {
+    .itemText {
+        width: 80%;
+    }
+
+    .loadingBar {
+        width: 80%;
+    }
+
+    .buttonBar,
+    .inputBar {
+        width: 75%;
+    }
+
+}
+
+@media screen and (max-width:450px) {
+    .myBtn {
+        width: 180px;
+    }
+}
