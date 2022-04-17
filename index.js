@@ -40,11 +40,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     var runTimeValueTag = document.getElementById('runTimeValue');
     // 是否慢速運行標籤
     var slowValueTag = document.getElementById('slowValue');
-    console.log([slowValueTag]);
     // 存儲要走訪的城市
     var cityList = [];
     // 執行伐
     var isRun = false;
+
+    // 存儲正在運作的演算物件
+    var km = null;
 
     var updateTotalCityValue = function updateTotalCityValue() {
         cityAmount = cityList.length;
@@ -111,7 +113,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         runTimeValueTag.innerHTML = 0;
 
         // 創建 K-means 算法
-        var km = new _KMeans2.default(kValueTag.value, cityList);
+        km = new _KMeans2.default(kValueTag.value, cityList);
         // 設定是否為慢數執行(為配合觀察使用)
         km.isSlow = slowValueTag.checked;
 
@@ -170,6 +172,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         // 更新最佳路徑距離
         totalSquareDeviationValueTag.innerHTML = 0;
         runTimeValueTag.innerHTML = 0;
+    });
+
+    // 監聽 Slow 切換
+    slowValueTag.addEventListener('click', function (event) {
+        if (km === null) return;
+        km.isSlow = slowValueTag.checked;
     });
 })();
 },{"./modules/CanvasUtil":2,"./modules/KMeans":3,"./modules/LoadingBar":4}],2:[function(require,module,exports){

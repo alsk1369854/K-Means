@@ -27,11 +27,13 @@ import KMeans from './modules/KMeans'
     const runTimeValueTag = document.getElementById('runTimeValue');
     // 是否慢速運行標籤
     const slowValueTag = document.getElementById('slowValue');
-    console.log([slowValueTag])
     // 存儲要走訪的城市
     let cityList = []
     // 執行伐
     let isRun = false
+
+    // 存儲正在運作的演算物件
+    let km = null;
 
     const updateTotalCityValue = () => {
         cityAmount = cityList.length
@@ -90,7 +92,7 @@ import KMeans from './modules/KMeans'
         runTimeValueTag.innerHTML = 0
 
         // 創建 K-means 算法
-        const km = new KMeans(kValueTag.value, cityList);
+        km = new KMeans(kValueTag.value, cityList);
         // 設定是否為慢數執行(為配合觀察使用)
         km.isSlow = slowValueTag.checked;
 
@@ -139,5 +141,11 @@ import KMeans from './modules/KMeans'
         // 更新最佳路徑距離
         totalSquareDeviationValueTag.innerHTML = 0
         runTimeValueTag.innerHTML = 0
+    })
+
+    // 監聽 Slow 切換
+    slowValueTag.addEventListener('click', event => {
+        if (km === null) return
+        km.isSlow = slowValueTag.checked;
     })
 })()
