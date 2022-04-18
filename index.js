@@ -622,7 +622,7 @@ var KMeans = function () {
                 totalSquareDeviationValueTag.innerHTML = _this.demoTotalSquareDeviationAll[_i].toFixed(2);
                 await _this.sleep(1);
                 // 慢速運行
-                if (_this.isSlow) {
+                if (newPercent !== 100 && _this.isSlow) {
                     await _this.sleep(500);
                 }
             };

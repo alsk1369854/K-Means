@@ -220,7 +220,7 @@ export default class KMeans {
             totalSquareDeviationValueTag.innerHTML = this.demoTotalSquareDeviationAll[i].toFixed(2)
             await this.sleep(1)
             // 慢速運行
-            if (this.isSlow) {
+            if (newPercent !== 100 && this.isSlow) {
                 await this.sleep(500)
             }
         }
