@@ -130,8 +130,10 @@ import KMeans from './modules/KMeans'
     const resetBtn = document.getElementById('resetBtn')
     resetBtn.addEventListener('click', event => {
         // if (isRun) return
-        km.delete()
-        km = null
+        if(km !== null){
+            km.delete()
+            km = null
+        }
         isRun = false
 
         // 清空畫布
