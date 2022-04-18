@@ -4,7 +4,7 @@
   "description": "Ant Colony Optimization",
   "main": "app.js",
   "scripts": {
-    "build": "babel src -d dist\nbrowserify dist/app.js -o index.js"
+    "build": "babel src -d dist && browserify dist/app.js -o index.js"
   },
   "author": "alsk1369854",
   "license": "ISC",
