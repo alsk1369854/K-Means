@@ -160,7 +160,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     // 綁定重置按鈕點擊事件
     var resetBtn = document.getElementById('resetBtn');
     resetBtn.addEventListener('click', function (event) {
-        if (isRun) return;
+        // if (isRun) return
+        km.delete();
+        km = null;
+        isRun = false;
+
         // 清空畫布
         _CanvasUtil2.default.clearCanvas();
         // 初始畫讀條
@@ -386,6 +390,7 @@ var KMeans = function () {
         this.STATE_NEW = 'NEW'; // 尚未執行 start()
         this.STATE_RUNNING = 'RUNNING'; // 執行 start(), 正在進行計算
         this.STATE_DONE = 'DONE'; // 計算完畢
+        this.STATE_DELETE = 'DELETE'; // 刪除
         this.state = this.NEW;
 
         // 存儲執行時間
@@ -393,6 +398,9 @@ var KMeans = function () {
 
         // 存儲總平方偏差
         this.totalSquareDeviation = 0;
+
+        // 存儲運算執行伐
+        this.isDelete = false;
     }
 
     _createClass(KMeans, [{
@@ -419,6 +427,11 @@ var KMeans = function () {
         key: 'getTotalSquareDeviation',
         value: function getTotalSquareDeviation() {
             return this.totalSquareDeviation;
+        }
+    }, {
+        key: 'delete',
+        value: function _delete() {
+            this.isDelete = true;
         }
 
         // 找出所有點的極限位置
@@ -591,11 +604,14 @@ var KMeans = function () {
                 // End 畫當前計算解果 (可刪)  ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
             };
 
-            while (this.MaxIterations-- > 0) {
+            while (this.isDelete === false && this.MaxIterations-- > 0) {
                 var _ret = await _loop();
 
                 if (_ret === 'break') break;
             }
+            // 計算已被刪除直接
+            if (this.isDelete) return;
+
             // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
             _LoadingBar2.default.setPersent(100);
             // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝

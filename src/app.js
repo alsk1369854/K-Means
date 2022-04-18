@@ -129,7 +129,11 @@ import KMeans from './modules/KMeans'
     // 綁定重置按鈕點擊事件
     const resetBtn = document.getElementById('resetBtn')
     resetBtn.addEventListener('click', event => {
-        if (isRun) return
+        // if (isRun) return
+        km.delete()
+        km = null
+        isRun = false
+
         // 清空畫布
         CanvasUtil.clearCanvas();
         // 初始畫讀條

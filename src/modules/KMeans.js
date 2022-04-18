@@ -42,6 +42,7 @@ export default class KMeans {
         this.STATE_NEW = 'NEW' // 尚未執行 start()
         this.STATE_RUNNING = 'RUNNING' // 執行 start(), 正在進行計算
         this.STATE_DONE = 'DONE' // 計算完畢
+        this.STATE_DELETE = 'DELETE' // 刪除
         this.state = this.NEW
 
         // 存儲執行時間
@@ -49,6 +50,9 @@ export default class KMeans {
 
         // 存儲總平方偏差
         this.totalSquareDeviation = 0
+
+        // 存儲運算執行伐
+        this.isDelete = false
     }
 
     getKPositionList() {
@@ -65,6 +69,9 @@ export default class KMeans {
     }
     getTotalSquareDeviation() {
         return this.totalSquareDeviation
+    }
+    delete(){
+        this.isDelete = true
     }
 
     // 找出所有點的極限位置
@@ -125,7 +132,7 @@ export default class KMeans {
         // 紀錄上一次的總平方偏差(用於判斷算法是否收斂了)
         let preveiusTotalSquareDeviation = Number.MIN_SAFE_INTEGER
 
-        while (this.MaxIterations-- > 0) {
+        while (this.isDelete === false && this.MaxIterations-- > 0) {
             // 驗算法已收斂跳出迴圈
             if (this.totalSquareDeviation === preveiusTotalSquareDeviation) break
             // 更新上一次的總平方偏差
@@ -200,6 +207,9 @@ export default class KMeans {
             }
             // End 畫當前計算解果 (可刪)  ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
         }
+        // 計算已被刪除直接跳出計算
+        if(this.isDelete) return this.state = this.STATE_DELETE
+
         // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
         LoadingBar.setPersent(100)
         // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
