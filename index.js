@@ -56,6 +56,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     // 綁定在畫布中的點擊事件
     _CanvasUtil2.default.getTag().addEventListener('mouseup', function (event) {
         if (isRun) return;
+        totalSquareDeviationValueTag.innerHTML = 0;
+        runTimeValueTag.innerHTML = 0;
         // 在點擊的 x y 座標
         var x = event.offsetX,
             y = event.offsetY;
@@ -80,6 +82,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     var randomPositionBtn = document.getElementById('randomPositionBtn');
     randomPositionBtn.addEventListener('click', function (event) {
         if (isRun) return;
+        totalSquareDeviationValueTag.innerHTML = 0;
+        runTimeValueTag.innerHTML = 0;
         var randomPositionAmount = document.getElementById('randomPositionAmount').value;
         for (var i = 0; i < randomPositionAmount; i++) {
             // 隨機x y軸
@@ -116,7 +120,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         km = new _KMeans2.default(kValueTag.value, cityList);
         // 設定是否為慢數執行(為配合觀察使用)
         km.isSlow = slowValueTag.checked;
-
+        // 重寫計算完成後的回調函數(因為 mk.start() 是個非同步方法)
         km.done = function () {
             // 取得計算後的數據
             var totalSquareDeviation = km.getTotalSquareDeviation();
@@ -364,11 +368,14 @@ var KMeans = function () {
     function KMeans(K, positionList) {
         _classCallCheck(this, KMeans);
 
+        // Start 用於存儲顯示解果（可刪） ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+        this.demoKPositionListAll = [];
+        this.demoAttributionListAll = [];
+        this.demoTotalSquareDeviationAll = [];
+        // End 用於存儲顯示解果（可刪） ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
         // 可變參數
         this.MaxIterations = 100; // 最大回合數
-
-        this.claculateMaxIterations = Math.floor(Math.pow(positionList.length, 0.5) * Math.pow(K, 0.5) / 2) + 10;
-        this.MaxIterations = this.claculateMaxIterations; // 最大回合數
 
         // 基礎設置
         this.K = K;
@@ -436,6 +443,7 @@ var KMeans = function () {
         key: 'delete',
         value: function _delete() {
             this.isDelete = true;
+            this.state = this.STATE_DELETE;
         }
 
         // 找出所有點的極限位置
@@ -523,22 +531,20 @@ var KMeans = function () {
             // 紀錄上一次的總平方偏差(用於判斷算法是否收斂了)
             var preveiusTotalSquareDeviation = Number.MIN_SAFE_INTEGER;
 
-            var _loop = async function _loop() {
+            while (this.MaxIterations-- > 0) {
                 // 計算已被刪除直接跳出計算
-                if (_this.isDelete) return {
-                        v: _this.state = _this.STATE_DELETE
-                    };
+                if (this.isDelete) return;
                 // 驗算法已收斂跳出迴圈
-                if (_this.totalSquareDeviation === preveiusTotalSquareDeviation) return 'break';
+                if (this.totalSquareDeviation === preveiusTotalSquareDeviation) break;
                 // 更新上一次的總平方偏差
-                preveiusTotalSquareDeviation = _this.totalSquareDeviation;
+                preveiusTotalSquareDeviation = this.totalSquareDeviation;
                 // 重置總平方偏差
-                _this.totalSquareDeviation = 0;
+                this.totalSquareDeviation = 0;
                 // 重置歸屬清單
-                _this.initializeAttributionList();
+                this.initializeAttributionList();
 
                 // 計算每個點的歸屬
-                _this.positionList.map(function (position) {
+                this.positionList.map(function (position) {
                     // 初始化歸屬點位
                     var attributionIndex = 999;
                     // 初始話最小點為差
@@ -558,77 +564,75 @@ var KMeans = function () {
                 });
 
                 // 計算新的核心位置
-                for (var i = 0; i < _this.kPositionList.length; i++) {
+                for (var i = 0; i < this.kPositionList.length; i++) {
                     // 計算單個核心歸屬的 X Y 總和 return [numX, numY]
-                    var sumXY = _this.attributionList[i].reduce(function (previousValue, currentValue) {
+                    var sumXY = this.attributionList[i].reduce(function (previousValue, currentValue) {
                         previousValue[0] += currentValue[0];
                         previousValue[1] += currentValue[1];
                         return previousValue;
                     }, [0, 0]);
                     // 被歸屬到核心的點總數
-                    var kListLength = _this.attributionList[i].length;
+                    var kListLength = this.attributionList[i].length;
                     // 重新定位核心
-                    _this.kPositionList[i] = [sumXY[0] / kListLength, sumXY[1] / kListLength];
+                    this.kPositionList[i] = [sumXY[0] / kListLength, sumXY[1] / kListLength];
                 }
 
-                // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-                var newPercent = Math.floor((_this.claculateMaxIterations - _this.MaxIterations) / _this.claculateMaxIterations * 100);
-                _LoadingBar2.default.setPersent(newPercent);
-                await _this.sleep(1);
-                // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+                // Start 用於存儲顯示解果（可刪） ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+                this.demoKPositionListAll.push([].concat(_toConsumableArray(this.kPositionList)));
+                this.demoAttributionListAll.push([].concat(_toConsumableArray(this.attributionList)));
+                this.demoTotalSquareDeviationAll.push(this.totalSquareDeviation);
+                // End 用於存儲顯示解果（可刪） ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+            }
+            // Start 畫每回合計算解果 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 
+            var COLOR_0 = '#669cd1';
+            var COLOR_1 = '#cca3bb';
+            var COLOR_2 = '#95bfb2';
+            var COLOR_3 = '#d6b27c';
+            var COLOR_4 = '#9e826c';
+            var COLOR_LIST = [COLOR_0, COLOR_1, COLOR_2, COLOR_3, COLOR_4];
+            var totalSquareDeviationValueTag = document.getElementById('totalSquareDeviationValue');
+            // 總回合數
+            var MaxPersent = this.demoKPositionListAll.length;
+            // 每回合解果
 
-                // Start 畫當前計算解果 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-                var COLOR_0 = '#669cd1';
-                var COLOR_1 = '#cca3bb';
-                var COLOR_2 = '#95bfb2';
-                var COLOR_3 = '#d6b27c';
-                var COLOR_4 = '#9e826c';
-                var COLOR_LIST = [COLOR_0, COLOR_1, COLOR_2, COLOR_3, COLOR_4];
-                // 清空畫布
+            var _loop = async function _loop(_i) {
+                // 被刪了就直接跳出
+                if (_this.isDelete) return {
+                        v: void 0
+                    };
                 _CanvasUtil2.default.clearCanvas();
-
-                var _loop3 = function _loop3(_i) {
+                _this.demoKPositionListAll[_i].map(function (kPosition, j) {
                     // 畫每個歸類點到此聚類的點
-                    _this.attributionList[_i].map(function (position) {
-                        var x = position[0],
-                            y = position[1];
+                    _this.demoAttributionListAll[_i][j].map(function (subPosition) {
+                        var x = subPosition[0],
+                            y = subPosition[1];
 
-                        _CanvasUtil2.default.drawHollowPoint(x, y, COLOR_LIST[_i]);
+                        _CanvasUtil2.default.drawHollowPoint(x, y, COLOR_LIST[j]);
                     });
                     // 畫聚類核心
-                    var _kPositionList$_i = _this.kPositionList[_i],
-                        x = _kPositionList$_i[0],
-                        y = _kPositionList$_i[1];
+                    var x = kPosition[0],
+                        y = kPosition[1];
 
-                    _CanvasUtil2.default.drawFilledPoint(x, y, COLOR_LIST[_i]);
-                };
-
-                for (var _i = 0; _i < _this.kPositionList.length; _i++) {
-                    _loop3(_i);
-                }
+                    _CanvasUtil2.default.drawFilledPoint(x, y, COLOR_LIST[j]);
+                });
+                // 更新讀條
+                var newPercent = Math.floor((_i + 1) / MaxPersent * 100);
+                _LoadingBar2.default.setPersent(newPercent);
+                // 更新這回合的平方和
+                totalSquareDeviationValueTag.innerHTML = _this.demoTotalSquareDeviationAll[_i].toFixed(2);
+                await _this.sleep(1);
+                // 慢速運行
                 if (_this.isSlow) {
                     await _this.sleep(500);
                 }
-                // End 畫當前計算解果 (可刪)  ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
             };
 
-            _loop2: while (this.MaxIterations-- > 0) {
-                var _ret = await _loop();
+            for (var _i = 0; _i < MaxPersent; _i++) {
+                var _ret = await _loop(_i);
 
-                switch (_ret) {
-                    case 'break':
-                        break _loop2;
-
-                    default:
-                        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
-                }
+                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
             }
-
-            // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-
-
-            _LoadingBar2.default.setPersent(100);
-            // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+            // End 畫每回合計算解果 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 
 
             // 計算結束時間
             var endTime = new Date();

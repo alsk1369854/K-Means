@@ -43,6 +43,8 @@ import KMeans from './modules/KMeans'
     // 綁定在畫布中的點擊事件
     CanvasUtil.getTag().addEventListener('mouseup', event => {
         if (isRun) return
+        totalSquareDeviationValueTag.innerHTML = 0
+        runTimeValueTag.innerHTML = 0
         // 在點擊的 x y 座標
         const { offsetX: x, offsetY: y } = event
         // 將點擊座標加入 pointList 中
@@ -62,6 +64,8 @@ import KMeans from './modules/KMeans'
     const randomPositionBtn = document.getElementById('randomPositionBtn')
     randomPositionBtn.addEventListener('click', event => {
         if (isRun) return
+        totalSquareDeviationValueTag.innerHTML = 0
+        runTimeValueTag.innerHTML = 0
         const randomPositionAmount = document.getElementById('randomPositionAmount').value
         for (let i = 0; i < randomPositionAmount; i++) {
             // 隨機x y軸
@@ -95,7 +99,7 @@ import KMeans from './modules/KMeans'
         km = new KMeans(kValueTag.value, cityList);
         // 設定是否為慢數執行(為配合觀察使用)
         km.isSlow = slowValueTag.checked;
-
+        // 重寫計算完成後的回調函數(因為 mk.start() 是個非同步方法)
         km.done = () => {
             // 取得計算後的數據
             const totalSquareDeviation = km.getTotalSquareDeviation()

@@ -20,6 +20,10 @@ body {
     display: table-cell;
     vertical-align: middle;
 }
+.myMainColor{
+
+    color: #698ade!important;
+}
 
 .myBtn {
     border-radius: 10px;

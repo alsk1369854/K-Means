@@ -11,12 +11,15 @@ export default class KMeans {
      * @param {*} PositionList typeof :Array<[x:Number,y:Number]> 
      */
     constructor(K, positionList) {
+        
+        // Start 用於存儲顯示解果（可刪） ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+        this.demoKPositionListAll = []
+        this.demoAttributionListAll = []
+        this.demoTotalSquareDeviationAll = []
+        // End 用於存儲顯示解果（可刪） ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
         // 可變參數
         this.MaxIterations = 100 // 最大回合數
-
-        this.claculateMaxIterations = Math.floor(Math.pow(positionList.length, 0.5) * Math.pow(K, 0.5) / 2) + 10
-        this.MaxIterations = this.claculateMaxIterations// 最大回合數
 
         // 基礎設置
         this.K = K;
@@ -72,6 +75,7 @@ export default class KMeans {
     }
     delete() {
         this.isDelete = true
+        this.state = this.STATE_DELETE
     }
 
     // 找出所有點的極限位置
@@ -134,7 +138,7 @@ export default class KMeans {
 
         while (this.MaxIterations-- > 0) {
             // 計算已被刪除直接跳出計算
-            if (this.isDelete) return this.state = this.STATE_DELETE
+            if (this.isDelete) return
             // 驗算法已收斂跳出迴圈
             if (this.totalSquareDeviation === preveiusTotalSquareDeviation) break
             // 更新上一次的總平方偏差
@@ -178,41 +182,49 @@ export default class KMeans {
                 this.kPositionList[i] = [sumXY[0] / kListLength, sumXY[1] / kListLength]
             }
 
-
-            // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-            const newPercent = Math.floor((this.claculateMaxIterations - this.MaxIterations) / this.claculateMaxIterations * 100)
-            LoadingBar.setPersent(newPercent)
-            await this.sleep(1)
-            // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-
-            // Start 畫當前計算解果 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-            const COLOR_0 = '#669cd1'
-            const COLOR_1 = '#cca3bb'
-            const COLOR_2 = '#95bfb2'
-            const COLOR_3 = '#d6b27c'
-            const COLOR_4 = '#9e826c'
-            const COLOR_LIST = [COLOR_0, COLOR_1, COLOR_2, COLOR_3, COLOR_4]
-            // 清空畫布
+            // Start 用於存儲顯示解果（可刪） ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+            this.demoKPositionListAll.push([...this.kPositionList])
+            this.demoAttributionListAll.push([...this.attributionList])
+            this.demoTotalSquareDeviationAll.push(this.totalSquareDeviation)
+            // End 用於存儲顯示解果（可刪） ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+        }
+        // Start 畫每回合計算解果 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 
+        const COLOR_0 = '#669cd1'
+        const COLOR_1 = '#cca3bb'
+        const COLOR_2 = '#95bfb2'
+        const COLOR_3 = '#d6b27c'
+        const COLOR_4 = '#9e826c'
+        const COLOR_LIST = [COLOR_0, COLOR_1, COLOR_2, COLOR_3, COLOR_4]
+        const totalSquareDeviationValueTag = document.getElementById('totalSquareDeviationValue')
+        // 總回合數
+        const MaxPersent = this.demoKPositionListAll.length;
+        // 每回合解果
+        for (let i = 0; i < MaxPersent; i++) {
+            // 被刪了就直接跳出
+            if (this.isDelete) return
             CanvasUtil.clearCanvas()
-            for (let i = 0; i < this.kPositionList.length; i++) {
+            this.demoKPositionListAll[i].map((kPosition, j) => {
                 // 畫每個歸類點到此聚類的點
-                this.attributionList[i].map(position => {
-                    const { [0]: x, [1]: y } = position
-                    CanvasUtil.drawHollowPoint(x, y, COLOR_LIST[i])
+                this.demoAttributionListAll[i][j].map(subPosition => {
+                    const { [0]: x, [1]: y } = subPosition
+                    CanvasUtil.drawHollowPoint(x, y, COLOR_LIST[j])
                 })
                 // 畫聚類核心
-                const { [0]: x, [1]: y } = this.kPositionList[i]
-                CanvasUtil.drawFilledPoint(x, y, COLOR_LIST[i])
-            }
+                const { [0]: x, [1]: y } = kPosition
+                CanvasUtil.drawFilledPoint(x, y, COLOR_LIST[j])
+            })
+            // 更新讀條
+            const newPercent = Math.floor((i + 1) / MaxPersent * 100)
+            LoadingBar.setPersent(newPercent)
+            // 更新這回合的平方和
+            totalSquareDeviationValueTag.innerHTML = this.demoTotalSquareDeviationAll[i].toFixed(2)
+            await this.sleep(1)
+            // 慢速運行
             if (this.isSlow) {
                 await this.sleep(500)
             }
-            // End 畫當前計算解果 (可刪)  ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
         }
-
-        // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-        LoadingBar.setPersent(100)
-        // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+        // End 畫每回合計算解果 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 
 
         // 計算結束時間
         const endTime = new Date()
