@@ -363,7 +363,7 @@ var KMeans = function () {
         // 可變參數
         this.MaxIterations = 100; // 最大回合數
 
-        this.claculateMaxIterations = Math.floor(Math.pow(positionList.length, 0.5) * Math.pow(K, 0.5) / 2);
+        this.claculateMaxIterations = Math.floor(Math.pow(positionList.length, 0.5) * Math.pow(K, 0.5) / 2) + 10;
         this.MaxIterations = this.claculateMaxIterations; // 最大回合數
 
         // 基礎設置
@@ -609,8 +609,8 @@ var KMeans = function () {
 
                 if (_ret === 'break') break;
             }
-            // 計算已被刪除直接
-            if (this.isDelete) return;
+            // 計算已被刪除直接跳出計算
+            if (this.isDelete) return this.state = this.STATE_DELETE;
 
             // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
             _LoadingBar2.default.setPersent(100);

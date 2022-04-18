@@ -15,7 +15,7 @@ export default class KMeans {
         // 可變參數
         this.MaxIterations = 100 // 最大回合數
 
-        this.claculateMaxIterations = Math.floor(Math.pow(positionList.length, 0.5) * Math.pow(K,0.5) / 2)
+        this.claculateMaxIterations = Math.floor(Math.pow(positionList.length, 0.5) * Math.pow(K,0.5) / 2) + 10
         this.MaxIterations = this.claculateMaxIterations// 最大回合數
 
         // 基礎設置
