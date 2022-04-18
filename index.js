@@ -332,6 +332,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _LoadingBar = require('./LoadingBar');
@@ -520,6 +522,10 @@ var KMeans = function () {
             var preveiusTotalSquareDeviation = Number.MIN_SAFE_INTEGER;
 
             var _loop = async function _loop() {
+                // 計算已被刪除直接跳出計算
+                if (_this.isDelete) return {
+                        v: _this.state = _this.STATE_DELETE
+                    };
                 // 驗算法已收斂跳出迴圈
                 if (_this.totalSquareDeviation === preveiusTotalSquareDeviation) return 'break';
                 // 更新上一次的總平方偏差
@@ -579,7 +585,7 @@ var KMeans = function () {
                 // 清空畫布
                 _CanvasUtil2.default.clearCanvas();
 
-                var _loop2 = function _loop2(_i) {
+                var _loop3 = function _loop3(_i) {
                     // 畫每個歸類點到此聚類的點
                     _this.attributionList[_i].map(function (position) {
                         var x = position[0],
@@ -596,7 +602,7 @@ var KMeans = function () {
                 };
 
                 for (var _i = 0; _i < _this.kPositionList.length; _i++) {
-                    _loop2(_i);
+                    _loop3(_i);
                 }
                 if (_this.isSlow) {
                     await _this.sleep(500);
@@ -604,15 +610,21 @@ var KMeans = function () {
                 // End 畫當前計算解果 (可刪)  ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
             };
 
-            while (this.isDelete === false && this.MaxIterations-- > 0) {
+            _loop2: while (this.MaxIterations-- > 0) {
                 var _ret = await _loop();
 
-                if (_ret === 'break') break;
+                switch (_ret) {
+                    case 'break':
+                        break _loop2;
+
+                    default:
+                        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+                }
             }
-            // 計算已被刪除直接跳出計算
-            if (this.isDelete) return this.state = this.STATE_DELETE;
 
             // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
             _LoadingBar2.default.setPersent(100);
             // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 

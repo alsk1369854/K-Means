@@ -15,7 +15,7 @@ export default class KMeans {
         // 可變參數
         this.MaxIterations = 100 // 最大回合數
 
-        this.claculateMaxIterations = Math.floor(Math.pow(positionList.length, 0.5) * Math.pow(K,0.5) / 2) + 10
+        this.claculateMaxIterations = Math.floor(Math.pow(positionList.length, 0.5) * Math.pow(K, 0.5) / 2) + 10
         this.MaxIterations = this.claculateMaxIterations// 最大回合數
 
         // 基礎設置
@@ -70,7 +70,7 @@ export default class KMeans {
     getTotalSquareDeviation() {
         return this.totalSquareDeviation
     }
-    delete(){
+    delete() {
         this.isDelete = true
     }
 
@@ -132,7 +132,9 @@ export default class KMeans {
         // 紀錄上一次的總平方偏差(用於判斷算法是否收斂了)
         let preveiusTotalSquareDeviation = Number.MIN_SAFE_INTEGER
 
-        while (this.isDelete === false && this.MaxIterations-- > 0) {
+        while (this.MaxIterations-- > 0) {
+            // 計算已被刪除直接跳出計算
+            if (this.isDelete) return this.state = this.STATE_DELETE
             // 驗算法已收斂跳出迴圈
             if (this.totalSquareDeviation === preveiusTotalSquareDeviation) break
             // 更新上一次的總平方偏差
@@ -207,8 +209,6 @@ export default class KMeans {
             }
             // End 畫當前計算解果 (可刪)  ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
         }
-        // 計算已被刪除直接跳出計算
-        if(this.isDelete) return this.state = this.STATE_DELETE
 
         // Start 讀條更新 (可刪) ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
         LoadingBar.setPersent(100)
