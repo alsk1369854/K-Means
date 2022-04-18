@@ -4,9 +4,9 @@ body {
     touch-action: manipulation;
 
     height: 100%;
-    overflow: scroll;
+    /* overflow: scroll; */
     overflow-X: hidden;
-    overflow-Y: hidden;
+    /* overflow-Y: hidden; */
 }
 
 html {
