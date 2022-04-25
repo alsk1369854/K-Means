@@ -8,6 +8,9 @@ class LoadingBar {
         this.loadingPercentTag = document.getElementById('loadingPercent')
         this.loadingLineTag = document.getElementById('loadingLine')
     }
+    getPersent(){
+        return this.loadingPercentTag.innerHTML
+    }
 
     setPersent(newPercent){
         this.loadingPercentTag.innerHTML = newPercent

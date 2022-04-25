@@ -616,13 +616,13 @@ var KMeans = function () {
                     _CanvasUtil2.default.drawFilledPoint(x, y, COLOR_LIST[j]);
                 });
                 // 更新讀條
-                var newPercent = Math.floor((_i + 1) / MaxPersent * 100);
-                _LoadingBar2.default.setPersent(newPercent);
+                var newPersent = Math.floor((_i + 1) / MaxPersent * 100);
+                _LoadingBar2.default.setPersent(newPersent);
                 // 更新這回合的平方和
                 totalSquareDeviationValueTag.innerHTML = _this.demoTotalSquareDeviationAll[_i].toFixed(2);
                 await _this.sleep(1);
                 // 慢速運行
-                if (newPercent !== 100 && _this.isSlow) {
+                if (newPersent !== 100 && _this.isSlow) {
                     await _this.sleep(500);
                 }
             };
@@ -681,6 +681,11 @@ var LoadingBar = function () {
     }
 
     _createClass(LoadingBar, [{
+        key: 'getPersent',
+        value: function getPersent() {
+            return this.loadingPercentTag.innerHTML;
+        }
+    }, {
         key: 'setPersent',
         value: function setPersent(newPercent) {
             this.loadingPercentTag.innerHTML = newPercent;

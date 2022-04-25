@@ -214,13 +214,13 @@ export default class KMeans {
                 CanvasUtil.drawFilledPoint(x, y, COLOR_LIST[j])
             })
             // 更新讀條
-            const newPercent = Math.floor((i + 1) / MaxPersent * 100)
-            LoadingBar.setPersent(newPercent)
+            const newPersent = Math.floor((i + 1) / MaxPersent * 100)
+            LoadingBar.setPersent(newPersent)
             // 更新這回合的平方和
             totalSquareDeviationValueTag.innerHTML = this.demoTotalSquareDeviationAll[i].toFixed(2)
             await this.sleep(1)
             // 慢速運行
-            if (newPercent !== 100 && this.isSlow) {
+            if (newPersent !== 100 && this.isSlow) {
                 await this.sleep(500)
             }
         }
