@@ -2,7 +2,7 @@
 
 <a target='_blank' href='https://alsk1369854.github.io/K-Means'>
 <p align="center">
-    <img width='400' src='https://raw.githubusercontent.com/alsk1369854/K-Means/master/screenshots/DemoGif_.gif'/>
+    <img width='400' src='https://raw.githubusercontent.com/alsk1369854/K-Means/master/screenshots/SystemPage.gif'/>
 </p>
 </a>
 
